@@ -1,0 +1,12 @@
+*.dll
+*.ttf
+*.bat
+*.png
+yamgl_data.hpp
+yamgl_data.cpp
+yamgl.cpp
+yamgl.exe
+makefile
+
+.vscode/
+temp/
