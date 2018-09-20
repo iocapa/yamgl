@@ -26,5 +26,5 @@ Contact details
 ---------------
 
 For reporting problems with **yamgl** or submitting feature requests, please
-open an `issue <https://github.com/iocapa/yamgl_gen/issues>`_, or submit a
+open an `issue <https://github.com/iocapa/yamgl/issues>`_, or submit a
 pull request.
