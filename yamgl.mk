@@ -1,8 +1,8 @@
 LIB = yamgl-0.0.5.a
 
-CXX = g++
-AR = ar
-CXXFLAGS = -O3 -std=c++14
+CXX ?= g++
+AR ?= ar
+CXXFLAGS := -O3 -std=c++14
 
 all:
 	@echo "building yamgl..."
