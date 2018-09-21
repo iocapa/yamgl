@@ -15,9 +15,9 @@ Introduction
 What is yamgl?
 ------------------
 
-**yamgl** is widget based graphics library intended for small microcontrollers and monochrome displays.
+**yamgl** is a widget based graphics library intended for small microcontrollers and monochrome displays.
 
-How is yamgl_gen licensed?
+How is yamgl licensed?
 --------------------------
 
 `CC-BY-SA license <https://github.com/iocapa/yamgl/blob/master/LICENSE>`_.
@@ -27,4 +27,8 @@ Contact details
 
 For reporting problems with **yamgl** or submitting feature requests, please
 open an `issue <https://github.com/iocapa/yamgl/issues>`_, or submit a
+<<<<<<< HEAD
 pull request.
+=======
+pull request.
+>>>>>>> 77312a9b0f6b90673b190f66999b6bbad8637622
