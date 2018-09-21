@@ -2,6 +2,8 @@
 *.ttf
 *.bat
 *.png
+*.a
+*.o
 yamgl_data.hpp
 yamgl_data.cpp
 yamgl.cpp

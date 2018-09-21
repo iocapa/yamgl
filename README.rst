@@ -15,7 +15,7 @@ Introduction
 What is yamgl?
 ------------------
 
-**yamgl** is widget based graphics library intended for small microcontrollers and monochrome displays.
+**yamgl** is a widget based graphics library intended for small microcontrollers and monochrome displays.
 
 How is yamgl licensed?
 --------------------------
