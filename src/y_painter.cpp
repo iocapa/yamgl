@@ -330,8 +330,9 @@ void y_painter::draw_text(const y_rect& rect, const y_ro_string& text, y_uint16 
 
     //Draw
     for (auto it = nit; it.is_valid(); ++it) {
-        
-        if (*it == '\n') {
+        y_uint16 ucode = *it;
+
+       if (ucode == '\n') {
             p_draw_text_run(y_point(comp_x(curr_w), row_y), nit, curr_count);
             nit = it;
             ++nit;
@@ -339,7 +340,7 @@ void y_painter::draw_text(const y_rect& rect, const y_ro_string& text, y_uint16 
             curr_w = 0;
             curr_count = 0;
         } else {
-            const y_glyph* gl = _font->p_glyph(*it);
+            const y_glyph* gl = _font->p_glyph(ucode);
             curr_count++;
             curr_w += gl->advance;
 
