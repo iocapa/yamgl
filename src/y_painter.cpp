@@ -19,9 +19,87 @@ y_painter::y_painter(y_surface* base)
     }
 }
 
-/// @brief Internal point drawing routine.
-void y_painter::p_draw_point(const y_point& p) {
-    y_point lp = _affine.map(p) + _base->_offset;
+/// @brief Internal bitmap.
+void y_painter::p_draw_bitmap(const y_point& p, const y_bitmap& bmap) {
+
+    //Setup
+    y_rect barea((p.x() - (bmap.w >> 1)), (p.y() - (bmap.h >> 1)), (bmap.w + 1), (bmap.h + 1));
+    y_rect bounds = _affine.map_rect(barea);
+    bounds.translate(_base->_offset);
+    bounds &= _base->_clip;
+
+    //Clip
+    if (bounds.is_valid()) {
+        for (y_int32 x = bounds.x1(); x <= bounds.x2(); x++) {
+            for (y_int32 y = bounds.y1(); y <= bounds.y2(); y++) {
+
+                //Map
+                y_point lp = _affine.map_inv(y_point(x, y) - _base->_offset) - barea.top_left();
+
+                if (bmap.pixel(lp.x(), lp.y())) {
+                    _base->_device->plot_pixel(x, y, _brush);
+                } 
+            }
+        }
+    }
+}
+
+/// @brief Draw a text run
+void y_painter::p_draw_text_run(const y_point& p, y_ro_string::iterator& it, y_uint16 count) {
+    y_point lp = p;
+
+    while (count--) {
+        const y_glyph* gl = _font->p_glyph(*it);
+        y_point px = lp + y_point(gl->left, gl->top);
+        p_draw_bitmap(px, gl->bitmap);
+        lp += y_point(gl->advance, 0);
+        ++it;
+    }
+}
+
+/// @brief Set used font
+void y_painter::set_font(y_font& font) {
+    _font = &font;
+}
+
+/// @brief Set text mode flags
+void y_painter::set_text_mode(y_uint16 flags) {
+    _tflags = flags;
+}
+
+/// @brief Set row distance multiplier (8.8 signed fixed point)
+void y_painter::set_row_modifier(y_int16 multiplier) {
+    _row_mult = multiplier;
+}
+
+/// @brief Set brush color
+void y_painter::set_brush(bool color) {
+    _brush = color;
+}
+
+/// @brief Set fill color
+void y_painter::set_fill(bool color) {
+    _fill = color;
+}
+
+/// @brief Set transform
+void y_painter::set_transform(const y_affine& aff) {
+    _affine = aff;
+}
+
+/// @brief Reset transform
+void y_painter::reset_transform() {
+    _affine = y_affine(); 
+}
+
+/// @brief Draw a point
+void y_painter::draw_point(y_int16 x, y_int16 y) {
+    draw_point(y_point(x, y));
+}
+
+/// @brief Draw a point
+void y_painter::draw_point(const y_point& point) {
+    y_point lp = _affine.map(point) + _base->_offset;
     
     //Clip
     if (_base->_clip.contains(lp)) {
@@ -29,8 +107,20 @@ void y_painter::p_draw_point(const y_point& p) {
     }
 }
 
+/// @brief Draw some points
+void y_painter::draw_points(const y_point* points, y_uint16 count) {
+    for (y_int32 i = 0; i < count; i++) {
+        draw_point(points[i]);
+    }
+}
+
 /// @brief Draw a line
-void y_painter::p_draw_line(const y_point& p1, const y_point& p2) {
+void y_painter::draw_line(const y_line& line) {
+    draw_line(line.p1(), line.p2());
+}
+
+/// @brief Draw a line
+void y_painter::draw_line(const y_point& p1, const y_point& p2) {
     y_point lp1 = _affine.map(p1) + _base->_offset;
     y_point lp2 = _affine.map(p2) + _base->_offset;
 
@@ -121,106 +211,6 @@ void y_painter::p_draw_line(const y_point& p1, const y_point& p2) {
     if (accept) { plot_line(x1, y1, x2, y2); }
 }
 
-/// @brief Internal bitmap.
-void y_painter::p_draw_bitmap(const y_point& p, const y_bitmap& bmap) {
-
-    //Setup
-    y_rect barea((p.x() - (bmap.w >> 1)), (p.y() - (bmap.h >> 1)), (bmap.w + 1), (bmap.h + 1));
-    y_rect bounds = _affine.map_rect(barea);
-    bounds.translate(_base->_offset);
-    bounds &= _base->_clip;
-
-    //Clip
-    if (bounds.is_valid()) {
-        for (y_int32 x = bounds.x1(); x <= bounds.x2(); x++) {
-            for (y_int32 y = bounds.y1(); y <= bounds.y2(); y++) {
-
-                //Map
-                y_point lp = _affine.map_inv(y_point(x, y) - _base->_offset) - barea.top_left();
-
-                if (bmap.pixel(lp.x(), lp.y())) {
-                    _base->_device->plot_pixel(x, y, _brush);
-                } 
-            }
-        }
-    }
-}
-
-/// @brief Draw a text run
-void y_painter::p_draw_text_run(const y_point& p, y_ro_string::iterator& it, y_uint16 count) {
-    y_point lp = p;
-
-    while (count--) {
-        const y_glyph* gl = _font->p_glyph(*it);
-        y_point px = lp + y_point(gl->left, gl->top);
-        p_draw_bitmap(px, gl->bitmap);
-        lp += y_point(gl->advance, 0);
-        ++it;
-    }
-}
-
-/// @brief Set used font
-void y_painter::set_font(y_font& font) {
-    _font = &font;
-}
-
-/// @brief Set text mode flags
-void y_painter::set_text_mode(y_uint16 flags) {
-    _tflags = flags;
-}
-
-/// @brief Set row distance multiplier (8.8 signed fixed point)
-void y_painter::set_row_modifier(y_int16 multiplier) {
-    _row_mult = multiplier;
-}
-
-/// @brief Set brush color
-void y_painter::set_brush(bool color) {
-    _brush = color;
-}
-
-/// @brief Set fill color
-void y_painter::set_fill(bool color) {
-    _fill = color;
-}
-
-/// @brief Set transform
-void y_painter::set_transform(const y_affine& aff) {
-    _affine = aff;
-}
-
-/// @brief Reset transform
-void y_painter::reset_transform() {
-    _affine = y_affine(); 
-}
-
-/// @brief Draw a point
-void y_painter::draw_point(y_int16 x, y_int16 y) {
-    draw_point(y_point(x, y));
-}
-
-/// @brief Draw a point
-void y_painter::draw_point(const y_point& point) {
-    p_draw_point(point);
-}
-
-/// @brief Draw some points
-void y_painter::draw_points(const y_point* points, y_uint16 count) {
-    for (y_int32 i = 0; i < count; i++) {
-        draw_point(points[i]);
-    }
-}
-
-/// @brief Draw a line
-void y_painter::draw_line(const y_line& line) {
-    draw_line(line.p1(), line.p2());
-}
-
-/// @brief Draw a line
-void y_painter::draw_line(const y_point& p1, const y_point& p2) {
-    p_draw_line(p1, p2);
-}
-
 /// @brief Draw a line
 void y_painter::draw_line(y_int16 x1, y_int16 y1, y_int16 x2, y_int16 y2) {
     draw_line(y_point(x1, y1), y_point(x2, y2));
@@ -286,8 +276,84 @@ void y_painter::draw_text(y_int16 x, y_int16 y, const y_ro_string& text) {
 
 /// @brief Draw rectangle aligned text
 void y_painter::draw_text(const y_rect& rect, const y_ro_string& text, y_uint16 flags) {
-    //TODO
-    y_assert(false);
+    y_int16 n_rows = 0;
+    y_int16 curr_w = 0;
+    y_int16 max_h = 0;
+    
+    //Count rows
+    for (auto it = text.begin(); it.is_valid(); ++it) {
+        if (*it == '\n') {
+            n_rows++;
+            curr_w = 0;
+        } else {
+            const y_glyph* gl = _font->p_glyph(*it);
+            curr_w += gl->advance;
+            max_h = y_max(max_h, gl->bitmap.h);
+
+            if ((flags & char_wrap) && (curr_w >= rect.w())) {
+                n_rows++;
+                curr_w = 0;
+            }
+        }
+    }
+
+    //Scaled row size
+    y_int16 row_size = (_font->advance() * _row_mult) >> 8;
+
+    //Align vertically
+    y_int16 row_y;
+    if (flags & align_v_center) {
+        row_y = rect.y1() + ((rect.h() - ((row_size * n_rows) + max_h)) >> 1) + max_h;
+    } else if (flags & align_bottom) {
+        row_y = rect.y2() - (row_size * n_rows);
+    } else { //align_top
+        row_y = rect.y1() + max_h;
+    }
+
+    //X alignment
+    auto comp_x = [&rect, &flags](y_int16 width) {
+        y_int16 val;
+        if (flags & align_h_center) {
+            val = rect.x1() + ((rect.w() - width) >> 1);
+        } else if (flags & align_right) {
+            val = rect.x2() - width;
+        } else { //align_left
+            val = rect.x1();
+        }
+        return val;
+    };
+
+    //Interate again
+    auto nit = text.begin();
+    y_int16 curr_count = 0;
+    curr_w = 0;
+
+    //Draw
+    for (auto it = nit; it.is_valid(); ++it) {
+        if (*it == '\n') {
+            p_draw_text_run(y_point(comp_x(curr_w), row_y), nit, curr_count);
+            nit = it;
+            ++nit;
+            row_y += row_size;
+            curr_w = 0;
+            curr_count = 0;
+        } else {
+            const y_glyph* gl = _font->p_glyph(*it);
+            curr_count++;
+            curr_w += gl->advance;
+
+            if ((flags & char_wrap) && (curr_w >= rect.w())) {
+                p_draw_text_run(y_point(comp_x(curr_w), row_y), nit, curr_count);
+                nit = it;
+                row_y += row_size;
+                curr_w = 0;
+                curr_count = 0;
+            }
+        }
+    }
+
+    //Last one
+    p_draw_text_run(y_point(comp_x(curr_w), row_y), nit, curr_count);
 }
 
 /// @brief Draw polygon

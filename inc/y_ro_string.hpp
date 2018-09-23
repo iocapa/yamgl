@@ -13,6 +13,7 @@ public:
 
     class iterator {
     public:
+        constexpr iterator();
         constexpr iterator(const char* current);
         constexpr iterator& operator++();
         constexpr bool is_valid() const;
@@ -40,6 +41,10 @@ constexpr y_ro_string::y_ro_string(const char* string)
 constexpr y_ro_string::iterator y_ro_string::begin() const {
     return y_ro_string::iterator(_string);
 }
+
+/// @brief Iterator
+constexpr y_ro_string::iterator::iterator()
+    : _current(nullptr) {}
 
 /// @brief Iterator
 constexpr y_ro_string::iterator::iterator(const char* current)

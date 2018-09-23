@@ -22,6 +22,9 @@ public:
     constexpr inline y_int16 y1() const;
     constexpr inline y_int16 y2() const;
 
+    constexpr inline y_int16 w() const;
+    constexpr inline y_int16 h() const;
+
     constexpr inline bool is_valid() const;
     constexpr inline bool contains(const y_point& p) const;
 
@@ -88,6 +91,16 @@ constexpr y_int16 y_rect::y1() const {
 /// @brief Getter
 constexpr y_int16 y_rect::y2() const {
     return _y2;
+}
+
+/// @brief Getter
+constexpr inline y_int16 y_rect::w() const {
+    return _x2 - _x1 + 1;
+}
+
+/// @brief Getter
+constexpr inline y_int16 y_rect::h() const {
+    return _y2 - _y1 + 1;
 }
 
 /// @brief Return true if the y_rectangle is valid

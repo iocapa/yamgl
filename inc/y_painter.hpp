@@ -21,8 +21,7 @@ enum painter_text_flags {
     align_bottom = 0x0010,
     align_v_center = 0x0020,
     align_center = 0x0040,
-    single_line = 0x0080,
-    word_wrap = 0x0100
+    char_wrap = 0x0080
 };
 
 /// @brief A painter paints onto a surface
@@ -62,7 +61,7 @@ public:
     //Text
     void draw_text(const y_point& pos, const y_ro_string& text);
     void draw_text(y_int16 x, y_int16 y, const y_ro_string& text);
-    void draw_text(const y_rect& rect, const y_ro_string& text, y_uint16 flags);
+    void draw_text(const y_rect& rect, const y_ro_string& text, y_uint16 flags = 0);
     
     //Polygons (fill by set_fill) TODO 
     void draw_polygon(const y_point* points, y_uint16 count);
@@ -74,8 +73,6 @@ public:
     void draw_rects(const y_rect* rects, y_uint16 count);
 
 private:
-    void p_draw_point(const y_point& p);
-    void p_draw_line(const y_point& p1, const y_point& p2);
     void p_draw_bitmap(const y_point& p, const y_bitmap& bmap);
     void p_draw_text_run(const y_point& p, y_ro_string::iterator& it, y_uint16 count);
  
