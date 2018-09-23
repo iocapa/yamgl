@@ -330,6 +330,7 @@ void y_painter::draw_text(const y_rect& rect, const y_ro_string& text, y_uint16 
 
     //Draw
     for (auto it = nit; it.is_valid(); ++it) {
+        
         if (*it == '\n') {
             p_draw_text_run(y_point(comp_x(curr_w), row_y), nit, curr_count);
             nit = it;
@@ -345,6 +346,7 @@ void y_painter::draw_text(const y_rect& rect, const y_ro_string& text, y_uint16 
             if ((flags & char_wrap) && (curr_w >= rect.w())) {
                 p_draw_text_run(y_point(comp_x(curr_w), row_y), nit, curr_count);
                 nit = it;
+                ++nit;
                 row_y += row_size;
                 curr_w = 0;
                 curr_count = 0;
