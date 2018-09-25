@@ -148,7 +148,7 @@ void y_painter::draw_line(const y_point& p1, const y_point& p2) {
         return code;
     };
 
-    // Fractionalline plotter
+    // Fractional line plotter
     auto plot_line = [this](y_int32 x1, y_int32 y1, y_int32 x2, y_int32 y2) {
         y_int32 dx = x2 - x1;
         y_int32 dy = y2 - y1;
@@ -182,7 +182,7 @@ void y_painter::draw_line(const y_point& p1, const y_point& p2) {
 
             y_uint8 oc = c1 ? c1 : c2; // First code
 
-            // Cut
+            // Cut TODO (some clipping rounding errors?)
             if (oc & 1) {
                 y = cy1;
                 x = (((x2 - x1) * (cy1 - y1)) / (y2 - y1)) + x1;

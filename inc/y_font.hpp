@@ -3,6 +3,7 @@
 
 #include "y_types.hpp"
 #include "y_bitmap.hpp"
+#include "y_platform.hpp"
 
 namespace yamgl {
     
@@ -32,9 +33,9 @@ struct y_font_data {
 /// @brief Font object
 class y_font {
 public:
-    constexpr y_font(const y_font_data &data);
+    Y_DECL_CONSTEXPR y_font(const y_font_data &data);
     
-    constexpr y_int16 advance() const;
+    Y_DECL_CONSTEXPR inline y_int16 advance() const;
 
     y_glyph glyph(y_uint16 unicode);
     const y_glyph& r_glyph(y_uint16 unicode);
@@ -48,11 +49,11 @@ private:
 };
 
 /// #brief Default constructor
-constexpr y_font::y_font(const y_font_data& data)
+Y_DECL_CONSTEXPR inline y_font::y_font(const y_font_data& data)
     : _data(data), _cindex(0), _coffset(-data.maps[0].from) {}
 
 /// #brief Get font vertical advance
-constexpr y_int16 y_font::advance() const {
+Y_DECL_CONSTEXPR inline y_int16 y_font::advance() const {
     return _data.advance;
 }    
 

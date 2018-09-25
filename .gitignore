@@ -4,6 +4,7 @@
 *.png
 *.a
 *.o
+*.ino
 yamgl_data.hpp
 yamgl_data.cpp
 yamgl.cpp

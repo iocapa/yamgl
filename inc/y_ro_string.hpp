@@ -2,56 +2,57 @@
 #define _Y_RO_STRING_HPP_
 
 #include "y_types.hpp"
+#include "y_platform.hpp"
 
 namespace yamgl {
 
 /// @brief Read-Only class
 class y_ro_string {
 public:
-    constexpr y_ro_string();
-    constexpr y_ro_string(const char* string);
+    Y_DECL_CONSTEXPR y_ro_string();
+    Y_DECL_CONSTEXPR y_ro_string(const char* string);
 
     class iterator {
     public:
-        constexpr iterator();
-        constexpr iterator(const char* current);
-        constexpr iterator& operator++();
-        constexpr bool is_valid() const;
-        constexpr y_uint16 operator*() const;
+        Y_DECL_CONSTEXPR iterator();
+        Y_DECL_CONSTEXPR iterator(const char* current);
+        Y_DECL_CONSTEXPR inline iterator& operator++();
+        Y_DECL_CONSTEXPR inline bool is_valid() const;
+        Y_DECL_CONSTEXPR inline y_uint16 operator*() const;
     
     private:
         const char* _current;
     };
 
-    constexpr iterator begin() const;
+    Y_DECL_CONSTEXPR inline iterator begin() const;
 
 private:
     const char* _string;
 };
 
 /// @brief Implicit constructor
-constexpr y_ro_string::y_ro_string()
+Y_DECL_CONSTEXPR inline y_ro_string::y_ro_string()
     : _string(nullptr) {}
 
 /// @brief Explicit constructor
-constexpr y_ro_string::y_ro_string(const char* string)
+Y_DECL_CONSTEXPR inline y_ro_string::y_ro_string(const char* string)
     : _string(string) {}
 
 /// @brief Begin iterator
-constexpr y_ro_string::iterator y_ro_string::begin() const {
+Y_DECL_CONSTEXPR inline y_ro_string::iterator y_ro_string::begin() const {
     return y_ro_string::iterator(_string);
 }
 
 /// @brief Iterator
-constexpr y_ro_string::iterator::iterator()
+Y_DECL_CONSTEXPR inline y_ro_string::iterator::iterator()
     : _current(nullptr) {}
 
 /// @brief Iterator
-constexpr y_ro_string::iterator::iterator(const char* current)
+Y_DECL_CONSTEXPR inline y_ro_string::iterator::iterator(const char* current)
     : _current(current) {}
 
 /// @brief Interator increment
-constexpr y_ro_string::iterator& y_ro_string::iterator::operator++() {
+Y_DECL_CONSTEXPR inline y_ro_string::iterator& y_ro_string::iterator::operator++() {
     y_uint8* lcur = (y_uint8*)_current;
     
     if (*lcur >= 0xF0) {
@@ -66,12 +67,12 @@ constexpr y_ro_string::iterator& y_ro_string::iterator::operator++() {
 }
 
 /// @brief True if valid
-constexpr bool y_ro_string::iterator::is_valid() const {
+Y_DECL_CONSTEXPR inline bool y_ro_string::iterator::is_valid() const {
     return (*_current != '\0');
 }
 
 /// @brief Get unicode code (0x0 - 0xFFFF)
-constexpr y_uint16 y_ro_string::iterator::operator*() const {
+Y_DECL_CONSTEXPR inline y_uint16 y_ro_string::iterator::operator*() const {
     y_uint16 unicode = 0;
     y_uint8* lcur = (y_uint8*)_current; 
 
