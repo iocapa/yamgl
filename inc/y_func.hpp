@@ -2,11 +2,12 @@
 #define _Y_FUNC_HPP_
 
 #include "y_types.hpp"
+#include "y_platform.hpp"
 
 namespace yamgl {
 
 /// @brief sin values for 0 - pi/2 radians. 0.12 signed format
-constexpr static const y_int16 sin_lut[129] = {
+Y_DECL_CONSTEXPR static const y_int16 sin_lut[129] = {
     0x0000, 0x0032, 0x0064, 0x0096, 0x00C8, 0x00FB, 0x012D, 0x015F, 
     0x0191, 0x01C3, 0x01F5, 0x0227, 0x0259, 0x028A, 0x02BC, 0x02ED, 
     0x031F, 0x0350, 0x0381, 0x03B2, 0x03E3, 0x0413, 0x0444, 0x0474, 
@@ -28,27 +29,27 @@ constexpr static const y_int16 sin_lut[129] = {
 
 /// @brief template abs function
 template <typename T>
-constexpr T y_abs(const T& a) {
+Y_DECL_CONSTEXPR T y_abs(const T& a) {
     return (T{} < a) ? a : -a;
 }
 
 /// @brief Template max function
 template <typename T>
-constexpr T y_max(const T& a, const T& b) { 
+Y_DECL_CONSTEXPR T y_max(const T& a, const T& b) { 
     return (a < b) ? b : a; 
 }
 
 /// @brief Template min function.
 template <typename T>
-constexpr T y_min(const T& a, const T& b) { 
+Y_DECL_CONSTEXPR T y_min(const T& a, const T& b) { 
     return (a < b) ? a : b; 
 }
 
 /// @brief pi constant
-constexpr y_int32 y_pi = (y_int32)(1 << 13);
+Y_DECL_CONSTEXPR const y_int32 y_pi = (y_int32)(1 << 13);
 
 /// @brief trig function [0...1] maps to [0...pi/2] radians. Input q12, output q12
-constexpr int y_sin(int rad) {
+Y_DECL_CONSTEXPR inline y_int32 y_sin(y_int32 rad) {
     y_int32 fract = rad & 0x1F;
     y_int32 index = (rad >> 5) & 0x7F;
     y_int32 quad = (rad >> 12) & 0x3;
@@ -70,7 +71,7 @@ constexpr int y_sin(int rad) {
 }
 
 /// @brief trig function [0...1] maps to [0...pi/2] radians. Input q12, output q12
-constexpr int y_cos(int rad) {
+Y_DECL_CONSTEXPR inline y_int32 y_cos(y_int32 rad) {
     y_int32 fract = rad & 0x1F;
     y_int32 index = (rad >> 5) & 0x7F;
     y_int32 quad = (rad >> 12) & 0x3;
